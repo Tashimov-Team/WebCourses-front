@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #7C77D3;
+  --secondary: #AA60BC;
+  --accent: #CFF409;
+}
+
+html{
+  scroll-behavior: smooth
+}
+
+body {
+  @apply antialiased;
+}
+
+.parallax {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
