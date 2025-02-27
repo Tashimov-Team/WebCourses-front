@@ -1,26 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { courses } from '../data/courses';
-import { User } from '../types';
 import { UserCircle, Book, Clock, Award } from 'lucide-react';
-
-// Mock user data (replace with actual user data from authentication)
-const mockUser: User = {
-  id: '1',
-  name: 'John Doe',
-  email: 'john@example.com',
-  purchasedCourses: ['1', '2']
-};
+import { useAuth } from '../context/AuthContext';
+import { coursesApi } from '../api';
+import { Course } from '../types';
 
 export default function Profile() {
+  const { user } = useAuth();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const { data } = await coursesApi.getCourses();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  if (!user) {
+    return <div className="text-center py-8">Пожалуйста, войдите в систему</div>;
+  }
+
   const purchasedCourses = courses.filter(course => 
-    mockUser.purchasedCourses.includes(course.id)
+    user.purchasedCourses.includes(course.id)
   );
 
   const availableCourses = courses.filter(course => 
-    !mockUser.purchasedCourses.includes(course.id)
+    !user.purchasedCourses.includes(course.id)
   );
 
+  if (loading) {
+    return <div className="text-center py-8">Загрузка курсов...</div>;
+  }
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="container mx-auto px-6 py-8">
@@ -35,8 +54,8 @@ export default function Profile() {
               <UserCircle className="w-16 h-16" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">{mockUser.name}</h1>
-              <p className="text-gray-600">{mockUser.email}</p>
+              <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
+              <p className="text-gray-600">{user.email}</p>
             </div>
           </div>
         </motion.div>

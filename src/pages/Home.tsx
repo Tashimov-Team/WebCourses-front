@@ -1,15 +1,32 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { courses } from '../data/courses';
+import React, { useEffect, useState } from 'react';
 import CourseCard from '../components/CourseCard';
+import { coursesApi } from '../api';
+import { Course } from '../types';
+import { motion } from 'framer-motion';
 import { Sparkles, Book, Users, Trophy, Rocket, Star, Clock, Globe } from 'lucide-react';
 
 export default function Home() {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const { data } = await coursesApi.getCourses();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  if (loading) {
+    return <div className="text-center py-20">Загрузка курсов...</div>;
+  }
 
   return (
     <div className="min-h-screen">
@@ -143,7 +160,7 @@ export default function Home() {
       </section>
 
       {/* Courses Section */}
-      <section ref={ref} className="py-20" id='courses'>
+      <section className="py-20" id='courses'>
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <Sparkles className="w-12 h-12 text-[#AA60BC] mx-auto mb-4" />
