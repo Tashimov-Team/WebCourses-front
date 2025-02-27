@@ -36,6 +36,7 @@ export default function CourseCard({ course, index }: Props) {
         <p className="text-gray-600 mb-4">{course.description}</p>
         
         <div className="space-y-2 mb-4">
+<<<<<<< HEAD
           {course.features.slice(0, 4).map((feature, i) => (
             <motion.div
               key={i}
@@ -48,6 +49,23 @@ export default function CourseCard({ course, index }: Props) {
               <span>{feature}</span>
             </motion.div>
           ))}
+=======
+          {course.features
+            .split(',') // Преобразуем строку в массив
+            .slice(0, 4) // Берем первые 4 элемента
+            .map((feature, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-2 text-sm text-gray-600"
+              >
+                <CheckCircle className="w-4 h-4 text-[#AA60BC]" />
+                <span>{feature.trim()}</span> {/* Убираем лишние пробелы */}
+              </motion.div>
+            ))}
+>>>>>>> 7c70040 (Added Courses DB)
         </div>
 
         <div className="flex justify-between items-center pt-4 border-t border-gray-100">
