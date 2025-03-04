@@ -3,7 +3,7 @@ import CourseCard from '../components/CourseCard';
 import { coursesApi } from '../api';
 import { Course } from '../types';
 import { motion } from 'framer-motion';
-import { Sparkles, Book, Users, Trophy, Rocket, Star, Clock, Globe } from 'lucide-react';
+import { Sparkles, Book, Users, Trophy, Rocket, Star, Clock, Globe, Loader2 } from 'lucide-react';
 
 export default function Home() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -25,7 +25,11 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-20">Загрузка курсов...</div>;
+    return(
+    <div className="flex justify-center items-center min-h-screen">
+      <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
+    </div>
+    );
   }
 
   return (

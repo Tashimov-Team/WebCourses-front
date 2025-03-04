@@ -53,8 +53,9 @@ export default function CoursePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-16">
       {/* Hero Section */}
+      <section id='top'></section>
       <div className="relative h-[60vh] overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center"

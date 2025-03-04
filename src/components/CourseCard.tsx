@@ -36,20 +36,6 @@ export default function CourseCard({ course, index }: Props) {
         <p className="text-gray-600 mb-4">{course.description}</p>
         
         <div className="space-y-2 mb-4">
-<<<<<<< HEAD
-          {course.features.slice(0, 4).map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="flex items-center gap-2 text-sm text-gray-600"
-            >
-              <CheckCircle className="w-4 h-4 text-[#AA60BC]" />
-              <span>{feature}</span>
-            </motion.div>
-          ))}
-=======
           {course.features
             .split(',') // Преобразуем строку в массив
             .slice(0, 4) // Берем первые 4 элемента
@@ -65,7 +51,6 @@ export default function CourseCard({ course, index }: Props) {
                 <span>{feature.trim()}</span> {/* Убираем лишние пробелы */}
               </motion.div>
             ))}
->>>>>>> 7c70040 (Added Courses DB)
         </div>
 
         <div className="flex justify-between items-center pt-4 border-t border-gray-100">
@@ -75,12 +60,8 @@ export default function CourseCard({ course, index }: Props) {
           >
             {course.price} ₸
           </motion.span>
-          <Link 
-            to={`/course/${course.id}`}
-            className="flex items-center gap-2 text-[#7C77D3] hover:text-[#AA60BC] transition-colors group/link"
-          >
-            Подробнее
-            <ChevronRight className="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform" />
+          <Link to={`/course/${course.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 text-[#7C77D3] font-semibold hover:underline">
+            Подробнее <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

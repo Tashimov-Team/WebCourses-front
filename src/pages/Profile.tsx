@@ -29,13 +29,19 @@ export default function Profile() {
     return <div className="text-center py-8">Пожалуйста, войдите в систему</div>;
   }
 
-  const purchasedCourses = courses.filter(course => 
-    user.purchasedCourses.includes(course.id)
-  );
+  const purchasedCoursesIds = Array.isArray(user.purchased_courses)
+  ? user.purchased_courses
+  : user.purchased_courses?.split(',').map(Number) ?? [];
 
-  const availableCourses = courses.filter(course => 
-    !user.purchasedCourses.includes(course.id)
+
+  const purchasedCourses = courses.filter(course => 
+    purchasedCoursesIds.includes(course.id)
   );
+  
+  const availableCourses = courses.filter(course => 
+    !purchasedCoursesIds.includes(course.id)
+  );
+  
 
   if (loading) {
     return <div className="text-center py-8">Загрузка курсов...</div>;

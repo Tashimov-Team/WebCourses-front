@@ -5,11 +5,7 @@ export interface Course {
   price: number;
   image: string;
   category: 'frontend' | 'backend';
-<<<<<<< HEAD
-  features: string[];
-=======
   features: string;
->>>>>>> 7c70040 (Added Courses DB)
   videos: {
     id: string;
     title: string;
@@ -22,5 +18,5 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  purchasedCourses: string[];
+  purchased_courses: string[];
 }
