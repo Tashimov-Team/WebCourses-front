@@ -1,19 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { courses } from '../data/courses';
-import { Clock, Users, Star, BookOpen, CheckCircle, ArrowLeft, Play, Video } from 'lucide-react';
+import { coursesApi } from '../api';
+import { Clock, Users, Star, BookOpen, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
 
 export default function CoursePage() {
   const { id } = useParams();
-  const course = courses.find(c => c.id === id);
-  const [selectedVideo, setSelectedVideo] = useState(course?.videos[0]);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  if (!course) {
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const response = await coursesApi.getCourse(id!);
+        setCourse(response.data);
+      } catch (err) {
+        setError('Ошибка загрузки курса');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCourse();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
+      </div>
+    );
+  }
+
+  if (error || !course) {
     return (
       <div className="min-h-screen bg-gray-50 pt-20">
         <div className="container mx-auto px-6 py-12 text-center">
-          <h1 className="text-2xl font-bold text-gray-800">Курс не найден</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{error || 'Курс не найден'}</h1>
           <Link to="/" className="text-[#7C77D3] hover:text-[#AA60BC]">
             Вернуться на главную
           </Link>
@@ -22,35 +46,8 @@ export default function CoursePage() {
     );
   }
 
-  const curriculum = [
-    {
-      title: 'Начало работы',
-      duration: '2 часа',
-      lessons: [
-        'Введение в курс',
-        'Настройка окружения разработки',
-        'Базовые концепции и основы'
-      ]
-    },
-    {
-      title: 'Основные концепции',
-      duration: '4 часа',
-      lessons: [
-        'Понимание основ',
-        'Продвинутые техники',
-        'Лучшие практики и паттерны'
-      ]
-    },
-    {
-      title: 'Продвинутые темы',
-      duration: '6 часов',
-      lessons: [
-        'Профессиональный рабочий процесс',
-        'Оптимизация производительности',
-        'Реальные приложения'
-      ]
-    }
-  ];
+  const featuresList = course.features?.split(', ') || [];
+  const totalLessons = course.curriculum?.reduce((acc, section) => acc + section.lessons.length, 0) || 0;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
@@ -82,7 +79,7 @@ export default function CoursePage() {
                 { icon: <Clock className="w-5 h-5" />, text: '12 часов' },
                 { icon: <Users className="w-5 h-5" />, text: '2,500+ студентов' },
                 { icon: <Star className="w-5 h-5" />, text: '4.9 рейтинг' },
-                { icon: <BookOpen className="w-5 h-5" />, text: '24 урока' }
+                { icon: <BookOpen className="w-5 h-5" />, text: `Кол-во уроков: ${totalLessons}` }
               ].map((stat, index) => (
                 <div key={index} className="flex items-center gap-2 text-white/80">
                   {stat.icon}
@@ -107,48 +104,6 @@ export default function CoursePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Video Player */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl shadow-lg p-8 mb-8"
-            >
-              <h2 className="text-2xl font-bold mb-6">Видеоуроки</h2>
-              <div className="aspect-video bg-black rounded-lg overflow-hidden mb-6">
-                {selectedVideo && (
-                  <iframe
-                    src={selectedVideo.url}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                )}
-              </div>
-              <div className="space-y-4">
-                {course.videos.map((video) => (
-                  <motion.button
-                    key={video.id}
-                    whileHover={{ scale: 1.01 }}
-                    onClick={() => setSelectedVideo(video)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-lg transition-colors ${
-                      selectedVideo?.id === video.id
-                        ? 'bg-[#7C77D3] text-white'
-                        : 'bg-gray-50 hover:bg-gray-100'
-                    }`}
-                  >
-                    <div className="p-2 bg-white/10 rounded-full">
-                      <Play className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 text-left">
-                      <h3 className="font-semibold">{video.title}</h3>
-                      <p className="text-sm opacity-80">{video.duration}</p>
-                    </div>
-                    <Video className="w-5 h-5" />
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-
             {/* What You'll Learn */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -157,7 +112,7 @@ export default function CoursePage() {
             >
               <h2 className="text-2xl font-bold mb-6">Чему вы научитесь</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {course.features.map((feature, index) => (
+                {featuresList.map((feature, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -180,9 +135,9 @@ export default function CoursePage() {
             >
               <h2 className="text-2xl font-bold mb-6">Программа курса</h2>
               <div className="space-y-6">
-                {curriculum.map((section, index) => (
+                {course.curriculum?.map((section, index) => (
                   <motion.div
-                    key={index}
+                    key={section.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.2 }}
@@ -190,11 +145,11 @@ export default function CoursePage() {
                   >
                     <div className="flex items-center justify-between bg-gray-50 p-4">
                       <div>
-                        <h3 className="font-semibold">{section.title}</h3>
+                        <h3 className="font-semibold">{section.title || `Раздел ${index + 1}`}</h3>
                         <p className="text-sm text-gray-600">{section.duration}</p>
                       </div>
                       <span className="text-sm text-gray-600">
-                        {section.lessons.length} уроков
+                        Кол-во уроков: {section.lessons.length}
                       </span>
                     </div>
                     <div className="p-4 space-y-3">

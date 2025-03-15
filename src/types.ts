@@ -5,7 +5,7 @@ export interface Course {
   price: number;
   image: string;
   category: 'frontend' | 'backend';
-  features: string;
+  features: string[];
   videos: {
     id: string;
     title: string;

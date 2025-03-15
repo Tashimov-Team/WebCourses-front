@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { User, Home, BookOpen, MessageSquare, KeyRound, LogOut } from 'lucide-react';
+import { User, BookOpen, KeyRound, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Header() {
@@ -12,7 +12,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <Link to="/" className="text-white text-2xl font-bold flex items-center gap-2 hover:text-[#CFF409] transition-colors">
             <BookOpen className="w-8 h-8" />
-            EduPlatform
+            WebCoursesDEV
           </Link>
           
           <div className="flex items-center gap-6">

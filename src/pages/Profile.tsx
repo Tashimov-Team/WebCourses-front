@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { UserCircle, Book, Clock, Award } from 'lucide-react';
+import { UserCircle, Book, Clock, Award, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { coursesApi } from '../api';
 import { Course } from '../types';
+import { Link } from 'react-router-dom';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -44,7 +45,9 @@ export default function Profile() {
   
 
   if (loading) {
-    return <div className="text-center py-8">Загрузка курсов...</div>;
+    return <div className="flex justify-center items-center min-h-screen">
+    <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
+  </div>;
   }
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
@@ -70,8 +73,8 @@ export default function Profile() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[
             { icon: <Book className="w-6 h-6" />, label: 'Куплено курсов', value: purchasedCourses.length },
-            { icon: <Clock className="w-6 h-6" />, label: 'Пройдено часов', value: '24' },
-            { icon: <Award className="w-6 h-6" />, label: 'Заработанно сертификатов', value: '2' },
+            { icon: <Clock className="w-6 h-6" />, label: 'Пройдено часов', value: '0' },
+            { icon: <Award className="w-6 h-6" />, label: 'Заработанно сертификатов', value: '0' },
           ].map((stat, index) => (
             <motion.div
               key={index}
@@ -122,11 +125,13 @@ export default function Profile() {
                 <div className="p-4">
                   <div className="flex justify-between items-center">
                     <div className="text-sm text-gray-600">
-                      <span className="font-semibold">Прогресс:</span> 45%
+                      <span className="font-semibold">Прогресс:</span> 0%
                     </div>
+                    <Link to={`/video/${course.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                     <button className="px-4 py-2 bg-[#7C77D3] text-white rounded-full hover:bg-[#AA60BC] transition-colors">
                       Продолжить
                     </button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>
@@ -159,7 +164,7 @@ export default function Profile() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
                     <h3 className="text-xl font-bold">{course.title}</h3>
-                    <p className="text-sm opacity-90">${course.price}</p>
+                    <p className="text-sm opacity-90">₸{course.price}</p>
                   </div>
                 </div>
                 <div className="p-4">

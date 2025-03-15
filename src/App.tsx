@@ -8,6 +8,7 @@ import Auth from './pages/Auth';
 import Header from './components/Header';
 import Buying from './pages/Buying';
 import Contact from './pages/Contact';
+import VideoPage from './pages/Video';
 
 function App() {
   return (
@@ -27,6 +28,14 @@ function App() {
                 <Profile />
               </ProtectedRoute>
             }
+          />
+          <Route
+          path='/video/:id'
+          element={
+            <ProtectedRoute>
+              <VideoPage/>
+            </ProtectedRoute>
+          }
           />
         </Routes>
       </AuthProvider>

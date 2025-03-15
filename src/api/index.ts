@@ -8,7 +8,6 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
 // Интерцептор для автоматической подстановки токена
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken');
@@ -41,5 +40,5 @@ export const auth = {
 
 export const coursesApi = {
   getCourses: () => api.get<Course[]>('/api/courses'),
-  getCourse: (id: string) => api.get<Course>(`/api/course/${id}`),
+  getCourse: (id: string) => api.get<Course>(`/api/courses/${id}`),
 };
