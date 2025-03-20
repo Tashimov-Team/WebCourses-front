@@ -76,9 +76,9 @@ export default function CoursePage() {
             <p className="text-xl text-white/90 mb-6">{course.description}</p>
             <div className="flex flex-wrap gap-6 mb-8">
               {[
-                { icon: <Clock className="w-5 h-5" />, text: '12 часов' },
-                { icon: <Users className="w-5 h-5" />, text: '2,500+ студентов' },
-                { icon: <Star className="w-5 h-5" />, text: '4.9 рейтинг' },
+                { icon: <Clock className="w-5 h-5" />, text: '0 часов' },
+                { icon: <Users className="w-5 h-5" />, text: '0 студентов' },
+                { icon: <Star className="w-5 h-5" />, text: '0 рейтинг' },
                 { icon: <BookOpen className="w-5 h-5" />, text: `Кол-во уроков: ${totalLessons}` }
               ].map((stat, index) => (
                 <div key={index} className="flex items-center gap-2 text-white/80">
