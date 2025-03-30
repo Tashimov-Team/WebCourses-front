@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ReactPlayer from 'react-player';
-import { coursesApi } from '../api';
+import { coursesApi, videoApi } from '../api';
 import { Play, Video, Loader2 } from 'lucide-react';
 
 export default function VideoPage() {
@@ -12,8 +12,21 @@ export default function VideoPage() {
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [seekTime, setSeekTime] = useState(0);
+  const [lastReportedProgress, setLastReportedProgress] = useState(0);
 
-  useEffect(() => {
+    const handleProgressUpdate = (progress: number) => {
+        // Можно добавить проверку на минимальное изменение, чтобы не отправлять каждый раз
+        if (progress - lastReportedProgress >= 5) { // каждые 5 секунд
+            videoApi.updateProgress(Number(selectedVideo?.id), progress)
+                .then(response => {
+                    console.log('Прогресс обновлён', response.data);
+                    setLastReportedProgress(progress);
+                })
+                .catch(err => console.error('Ошибка обновления прогресса', err));
+        }
+    };
+
+    useEffect(() => {
     coursesApi.getCourse(id)
         .then(response => {
           setCourse(response.data);
@@ -56,9 +69,15 @@ export default function VideoPage() {
                           controls
                           width="100%"
                           height="100%"
-                          onProgress={(progress) => setSeekTime(progress.playedSeconds)}
+                          onProgress={(progress) => {
+                              setSeekTime(progress.playedSeconds);
+                              handleProgressUpdate(progress.playedSeconds);
+                          }}
                           onPlay={() => setPlaying(true)}
-                          onPause={() => setPlaying(false)}
+                          onPause={() => {
+                              setPlaying(false);
+                              handleProgressUpdate(seekTime);
+                          }}
                       />
                   )}
                 </div>

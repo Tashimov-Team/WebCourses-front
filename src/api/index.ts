@@ -42,3 +42,10 @@ export const coursesApi = {
   getCourses: () => api.get<Course[]>('/api/courses'),
   getCourse: (id: string) => api.get<Course>(`/api/courses/${id}`),
 };
+export const videoApi = {
+  updateProgress: (videoId: number, progress: number) =>
+      api.post('/api/video/progress', { video_id: videoId, progress }),
+};
+export const progressApi = {
+  getCoursesProgress: () => api.get<{ [key: number]: number }>('/api/user/courses-progress'),
+};
